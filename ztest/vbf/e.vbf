@@ -1,0 +1,101 @@
+vbf_version=2.6;
+
+ 
+
+header {
+
+    //**********************************************************
+
+    //*
+
+    //*                  Volvo Car Corporation
+
+    //*
+
+    //*      VBF Convert ver. 5.0.0 example file
+
+    //*
+
+    //*                        DO NOT EDIT !
+
+    //*
+
+    //**********************************************************
+
+ 
+
+    //**********************************************************
+
+    //*                        Comments
+
+    //**********************************************************
+
+    //
+
+    // Application program for the DIM.
+
+    //
+
+    //**********************************************************
+
+ 
+
+    // Software part number
+
+       sw_part_number = ”98765432”;
+
+ 
+
+    // Software part type: Executable
+
+       Sw_version = “AA”
+
+ 
+
+    // Software part type: Executable
+
+       sw_part_type = EXE;
+
+ 
+
+    // ECU address used for: DIM Driver Information Module
+
+       ecu_address = 0x0123;
+
+ 
+
+    // Start address for flash sector(s)
+
+       erase = { { 0x2000, 0x200 },
+
+               { 0x4000, 0x200 },
+
+               { 0x6000, 0x200 } };
+
+//Root hash value
+
+verification_block_root_hash = 0x85F4346439C464812C528F26DCBF6C467225C61AACC57544BFC9F9340F92D5B7;
+
+ 
+
+      //Start address of the hash table
+
+      verification_block_start = 0x5FF00;
+
+ 
+
+      //Length of the hash table
+
+      verification_block_length = 0xcc;
+
+ 
+
+ 
+
+    // Blocks:   24
+
+    // Bytes:    2105
+
+       file_checksum = 0x29058C73;
+
+} <binary data>

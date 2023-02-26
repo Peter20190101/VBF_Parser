@@ -1,0 +1,6 @@
+__pycache__/
+ford/__pycache__/
+
+# IDEs
+.vscode/
+.idea/
