@@ -70,7 +70,7 @@ class SimpleISOTP:
 					self.state += 1
 				else:
 					self.state = 0
-		self.bus.send.__closure__
+		# self.bus.send.__closure__
 
 	def recv(self):
 		while True:

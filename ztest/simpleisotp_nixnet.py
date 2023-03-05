@@ -12,7 +12,7 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 this program. If not, see <http://www.gnu.org/licenses/>.
 """
-
+import six
 import sys
 from time import sleep
 from io import BytesIO
@@ -50,13 +50,24 @@ class SimpleISOTP:
 	def putoncan(self, msg):
 		sleep(0.002)
 		with nixnet.FrameOutStreamSession('can1') as output_session:
-			output_session.intf.can_term = constants.CanTerm.ON
-			output_session.intf.baud_rate = 500000
-			id = types.CanIdentifier(self.can_id)
-			payload = msg
-			frame = types.CanFrame(id, constants.FrameType.CAN_DATA, payload)
-			frame.payload = payload
-			output_session.frames.write([frame])
+			# with nixnet.FrameInStreamSession('can2') as input_session:
+				output_session.intf.can_term = constants.CanTerm.ON
+				output_session.intf.baud_rate = 500000
+
+				# input_session.intf.can_term = constants.CanTerm.ON
+				# input_session.intf.baud_rate = 500000
+
+				# input_session.start()
+				id = types.CanIdentifier(self.can_id)
+				payload = msg
+				frame = types.CanFrame(id, constants.FrameType.CAN_DATA, payload)
+				frame.payload = payload
+				output_session.frames.write([frame])
+
+				# count = 1
+				# frames = input_session.frames.read(count)
+				# for frame in frames:
+				# 	print('Received frame with ID: {} payload: {}'.format(frame.identifier,list(six.iterbytes(frame.payload))))
 
 	def send(self, payload):
 		size = len(payload)
@@ -89,13 +100,23 @@ class SimpleISOTP:
 				else:
 					self.state = 0
 
+	def recv1(self):
+		with nixnet.FrameInStreamSession('can2') as input_session:
+			input_session.intf.can_term = constants.CanTerm.OFF
+			input_session.intf.baud_rate = 500000
+			input_session.start()
+			count = 1
+			frames = input_session.frames.read(count)
+			for frame in frames:
+				print('Received frame with ID: {} payload: {}'.format(frame.identifier,list(six.iterbytes(frame.payload))))
+
 	def recv(self):
 		while True:
 			# data = self.bus.recv().data
-			with nixnet.FrameInStreamSession('can1') as input_session:
+			with nixnet.FrameInStreamSession('can2') as input_session:
 				input_session.intf.can_term = constants.CanTerm.ON
-				input_session.intf.can_term = nixnet._enums.CanTerm.ON
-				input_session.intf.baud_rate = 125000
+				# input_session.intf.can_term = nixnet._enums.CanTerm.ON
+				input_session.intf.baud_rate = 500000
 				count = 1
 				data = input_session.frames.read(count)
 				# for frame in frames:
@@ -103,7 +124,13 @@ class SimpleISOTP:
 				# 	print(frame)
 			# print("DEBUG: {}".format(data))
 			if not data:
+
 				return None
+
+			# fd0 = frames[0].identifier
+			# fd1 = list(six.iterbytes(frames[0].payload))
+			for frame in data:
+				print('Received frame with ID: {} payload: {}'.format(frame.identifier,list(six.iterbytes(frame.payload))))
 
 			if self.state == 0 and (data[0] & 0xf0 == 0x10):
 				self.state = 1
@@ -135,8 +162,16 @@ class SimpleISOTP:
 				size = data[0]
 				return data[1:size+1]
 		
-# can_interface = "can1"
-# ecuid = 400
-# aa = SimpleISOTP(can_interface, ecuid, ecuid+0x08)
-# aa.send(bytearray([0x13, 0x01]))
+can_interface = "can1"
+ecuid = 400
+aa = SimpleISOTP(can_interface, ecuid, ecuid+0x08)
+aa.send(bytearray([0x13, 0x01]))
+# sleep(1)
+# aa.recv1()
 # aa.send(bytearray([0x11, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01]))
+
+# can_interface = "can2"
+# ecuid = 400
+# bb = SimpleISOTP(can_interface, ecuid, ecuid+0x08)
+# rx = aa.recv()
+# print(rx)

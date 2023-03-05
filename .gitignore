@@ -1,6 +1,12 @@
 __pycache__/
 ford/__pycache__/
 
+# exe
+build/
+dist/
+*.spec
+
+
 # IDEs
 .vscode/
 .idea/

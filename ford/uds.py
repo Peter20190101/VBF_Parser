@@ -14,7 +14,7 @@ import sys
 from array import array
 from time import sleep
 
-from ford.simpleisotp2 import SimpleISOTP
+from ford.simpleisotp import SimpleISOTP
 
 def debug(str, end="\n"):
 	print(str, end=end)
